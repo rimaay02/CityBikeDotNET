@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using static System.Collections.Specialized.BitVector32;
+using CityBikeFiAPI.Models;
 
 namespace CityBikeAPI.Controllers.Tests
 {
@@ -84,36 +85,52 @@ namespace CityBikeAPI.Controllers.Tests
         public async Task GetStationTestAsync()
         {
             // Arrange
-            var existingStation = new Station
+            var station = new Station
             {
-                FID = 3,
-                ID = 3,
-                Nimi = "Station 3",
-                Namn = "Station 3",
-                Name = "Station 3",
-                Osoite = "Address 3",
-                Adress = "Address 3",
-                Kaupunki = "City 3",
-                Stad = "City 3",
-                Operaattor = "Operator 3",
-                Kapasiteet = 15,
-                X = 60.23456M,
-                Y = 24.23456M
+                ID = 1,
+                Name = "Station 1",
+                Adress = "Address 1"
             };
+
+            var journey1 = new JourneyEntity
+            {
+                Departure_station_id = 1,
+                Return_station_id = 2
+            };
+
+            var journey2 = new JourneyEntity
+            {
+                Departure_station_id = 3,
+                Return_station_id = 1
+            };
+
             var options = new DbContextOptionsBuilder<CityBikeContext>()
-                .UseInMemoryDatabase(databaseName: "GetStation")
+                .UseInMemoryDatabase(databaseName: "GetStation_ReturnsStationInfo")
                 .Options;
+
             using (var context = new CityBikeContext(options))
             {
-                await context.Stations.AddAsync(existingStation);
+                await context.AddRangeAsync(station, journey1, journey2);
                 await context.SaveChangesAsync();
-
-                var controller = new StationController(context);
-                var result = await controller.GetStation(existingStation.ID);
-                Assert.IsInstanceOfType(result, typeof(OkObjectResult));
-                var okResult = (OkObjectResult)result;
-                Assert.AreEqual(existingStation, okResult.Value);
             }
+
+            var controller = new StationController(new CityBikeContext(options));
+
+            // Act
+            var result = await controller.GetStation(station.ID);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+
+
+            var okResult = (OkObjectResult)result;
+            var stationInfo = (StationInfo)okResult.Value;
+
+            Assert.AreEqual(station.Name, stationInfo.Name);
+            Assert.AreEqual(station.Adress, stationInfo.Address);
+            Assert.AreEqual(1, stationInfo.TotalJourneysStarting);
+            Assert.AreEqual(1, stationInfo.TotalJourneysEnding);
+
         }
 
         [TestMethod()]

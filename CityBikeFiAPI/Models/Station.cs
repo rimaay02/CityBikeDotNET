@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace CityBikeAPI.Models
 {
     public class Station
     {
+        [Key]
         public int FID { get; set; }
         public int ID { get; set; }
         public string? Nimi { get; set; }

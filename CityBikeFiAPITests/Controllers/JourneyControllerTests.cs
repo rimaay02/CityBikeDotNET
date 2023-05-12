@@ -9,6 +9,9 @@ using CityBikeAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using CityBikeAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using CityBikeFiAPI.Models;
+using Microsoft.Extensions.Options;
 
 namespace CityBikeAPI.Controllers.Tests
 {
@@ -30,32 +33,29 @@ namespace CityBikeAPI.Controllers.Tests
         [TestMethod()]
         public async Task GetAllJourneysTestAsync()
         {
-            _context?.Journeys.AddRange(new List<Journey>
+            _context?.Journey.AddRange(new List<JourneyEntity>
             {
-              new Journey {
-                  Id = 1,
+              new JourneyEntity {
                   Departure = DateTime.Now,
-                  Return_station = DateTime.Now.AddDays(1),
+                  Return = DateTime.Now.AddDays(1),
                   Departure_station_id = 1,
                   Departure_station_name = "Station 1",
                   Return_station_id = 2,
                   Return_station_name = "Station 2",
                   Covered_distance = 10,
                   Duration = 120 },
-              new Journey {
-                  Id = 2,
+              new JourneyEntity {
                   Departure = DateTime.Now.AddDays(2),
-                  Return_station = DateTime.Now.AddDays(3),
+                  Return = DateTime.Now.AddDays(3),
                   Departure_station_id = 2,
                   Departure_station_name = "Station 2",
                   Return_station_id = 3,
                   Return_station_name = "Station 3",
                   Covered_distance = 20,
                   Duration = 240 },
-              new Journey {
-                  Id = 3,
+              new JourneyEntity {
                   Departure = DateTime.Now.AddDays(4),
-                  Return_station = DateTime.Now.AddDays(5),
+                  Return = DateTime.Now.AddDays(5),
                   Departure_station_id = 3,
                   Departure_station_name = "Station 3",
                   Return_station_id = 4,
@@ -64,50 +64,52 @@ namespace CityBikeAPI.Controllers.Tests
                   Duration = 360 },
             });
             _context.SaveChanges();
-            var controller = new JourneyController(_context);
-            var result = await controller.GetAllJourneys();
-            var okResult = result as OkObjectResult;
-            Assert.IsNotNull(okResult);
-            Assert.AreEqual(200, okResult.StatusCode);
-            var journeys = okResult.Value as List<Journey>;
-            Assert.IsNotNull(journeys);
-            Assert.AreEqual(3, journeys.Count);
-            Assert.IsTrue(journeys.Any(j => j.Id == 3 && j.Departure_station_name == "Station 3"));
+            using (var context = _context)
+            {
+                var controller = new JourneyController(context);
 
+                // Act
+                var result = await controller.GetAllJourneys();
 
+                // Assert
+                Assert.IsNotNull(result);
+                Assert.IsInstanceOfType(result, typeof(OkObjectResult));
 
+                var okResult = result as OkObjectResult;
+                var journeys = okResult.Value as List<JourneyView>;
+
+                Assert.AreEqual(3, journeys.Count);
+            }
         }
 
         [TestMethod()]
-        public async Task GetJourneyTestAsync()
+        public async Task AddNewJourneyTestAsync()
         {
-            var existingJourney = new Journey
-            {
-                Id = 4,
-                Departure = DateTime.Now.AddDays(4),
-                Return_station = DateTime.Now.AddDays(5),
-                Departure_station_id = 4,
-                Departure_station_name = "Station 4",
-                Return_station_id = 5,
-                Return_station_name = "Station 5",
-                Covered_distance = 30,
-                Duration = 360            
-            };
             var options = new DbContextOptionsBuilder<CityBikeContext>()
-                .UseInMemoryDatabase(databaseName: "GetJourney")
-                .Options;
+       .UseInMemoryDatabase(databaseName: "NewJourney")
+       .Options;
+            var dbContext = new CityBikeContext(options);
+            var controller = new JourneyController(dbContext);
+            var newJourney = new JourneyEntity()
+            {
+                Departure = DateTime.Now.AddDays(2),
+                Return = DateTime.Now.AddDays(2),
+                Departure_station_id = 10,
+                Departure_station_name = "Station 10",
+                Return_station_id = 11,
+                Return_station_name = "Station 11",
+                Covered_distance = 20,
+                Duration = 330
+            };
+
             using (var context = new CityBikeContext(options))
             {
-                await context.Journeys.AddAsync(existingJourney);
-                await context.SaveChangesAsync();
+                var result = await controller.AddNewJourney(newJourney);
 
-                var controller = new JourneyController(context);
-                var result = await controller.GetJourney(existingJourney.Id);
-                Assert.IsInstanceOfType(result, typeof(OkObjectResult));
-                var okResult = (OkObjectResult)result;
-                Assert.AreEqual(existingJourney, okResult.Value);
+                // Assert
+                Assert.IsInstanceOfType(result, typeof(OkResult));
             }
-
         }
     }
+
 }

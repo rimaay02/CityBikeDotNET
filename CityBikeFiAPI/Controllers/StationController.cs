@@ -1,5 +1,6 @@
 ﻿using CityBikeAPI.Data;
 using CityBikeAPI.Models;
+using CityBikeFiAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,7 +26,15 @@ namespace CityBikeAPI.Controllers
             {
                 return NotFound();
             }
-            return Ok(station);
+            var stationInfo = new StationInfo
+            {
+                Name = station.Name,
+                Address = station.Adress,
+                TotalJourneysStarting = await db.Journey.CountAsync(j => j.Departure_station_id == id),
+                TotalJourneysEnding = await db.Journey.CountAsync(j => j.Return_station_id == id),
+            };
+
+            return Ok(stationInfo);
         }
 
         [HttpPost]
