@@ -9,6 +9,7 @@ ENV NUGET_XMLDOC_MODE skip
 WORKDIR /app
 COPY CityBikeFiAPI/CityBikeFiAPI.csproj .
 COPY CityBikeFiAPITests/CityBikeFiAPIUnitTests.csproj .
+COPY CityBikeFiAPIIntegrationTests/CityBikeFiAPIIntegrationTests.csproj .
 RUN dotnet restore CityBikeFiAPI.csproj
 COPY . /app
 RUN dotnet publish /app/CityBikeFiAPI/CityBikeFiAPI.sln --output ${BUILD_LOCATION} --configuration ${BUILD_CONFIG}

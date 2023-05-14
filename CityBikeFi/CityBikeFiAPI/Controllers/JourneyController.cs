@@ -32,9 +32,9 @@ namespace CityBikeAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
-            await db.AddAsync(journeyEntity);
+            var newJourney = await db.AddAsync(journeyEntity);
             await db.SaveChangesAsync();
-            return Ok();
+            return Ok(newJourney.Entity);
         }
     }
 }

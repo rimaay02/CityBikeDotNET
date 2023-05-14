@@ -105,9 +105,15 @@ namespace CityBikeAPI.Controllers.Tests
             using (var context = new CityBikeContext(options))
             {
                 var result = await controller.AddNewJourney(newJourney);
+                var okResult = result as OkObjectResult;
+                var journey = okResult.Value as JourneyEntity;
 
                 // Assert
-                Assert.IsInstanceOfType(result, typeof(OkResult));
+                Assert.IsNotNull(okResult);
+                Assert.IsInstanceOfType(okResult, typeof(OkObjectResult));
+                Assert.AreEqual(200, okResult.StatusCode);
+                Assert.IsNotNull(journey);
+                Assert.AreEqual(10, journey.Departure_station_id);
             }
         }
     }
