@@ -222,37 +222,7 @@ namespace CityBikeAPI.Controllers.Tests
                 Assert.Equal(1, stationInfo?.TotalJourneysEnding);
             }
         }
-        [Fact]
-        public async Task AddNewStationAsyncTest()
-        {
-            var dbContext = new CityBikeContext(_options);
-            var controller = new StationController(dbContext);
-            var newStation = new Station()
-            {
-                FID = 88,
-                ID = 89,
-                Nimi = "Station 88",
-                Namn = "Station 88",
-                Name = "Station 88",
-                Osoite = "Address 88",
-                Adress = "Address 88",
-                Kaupunki = "City 88",
-                Stad = "City 88",
-                Operaattor = "Operator 88",
-                Kapasiteet = 15,
-                X = 60.23456M,
-                Y = 24.23456M
-            };
-            var expectedStationId = 89;
-
-            // Act
-            var result = await controller.AddStation(newStation) as OkObjectResult;
-            var actualStationId = (int)result.Value;
-
-            // Assert
-            Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
-            Assert.Equal(expectedStationId, actualStationId);
-        }
+     
 
     }
 }

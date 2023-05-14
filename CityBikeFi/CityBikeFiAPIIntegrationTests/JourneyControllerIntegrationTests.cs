@@ -199,39 +199,8 @@ namespace CityBikeAPI.Controllers.Tests
                 Assert.Equal(5, journeyInfoList.Count);
             }
         }
-        [Fact]
-        public async Task AddNewJourneyAsyncTest()
-        {
-            using (MySqlConnection connection = new MySqlConnection(_connectionString))
-            {
-                var controller = new JourneyController(_context);
-                var newJourney = new JourneyEntity()
-                {
-                    Departure = DateTime.Now.AddDays(2),
-                    Return = DateTime.Now.AddDays(2),
-                    Departure_station_id = 3,
-                    Departure_station_name = "Station 3",
-                    Return_station_id = 1,
-                    Return_station_name = "Station 1",
-                    Covered_distance = 20,
-                    Duration = 330
-                };
-                var expectedDepartureStationId = 10;
-
-                // Act
-                var result = await controller.AddNewJourney(newJourney);
-                var okResult = result as OkObjectResult;
-                var journey = okResult.Value as JourneyEntity;
-
-                // Assert
-                Assert.NotNull(okResult);
-                Assert.IsType<OkObjectResult>(okResult);
-                Assert.Equal(200, okResult.StatusCode);
-                Assert.NotNull(journey);
-                Assert.Equal(3, journey.Departure_station_id);
-            }
+      
            
-        }
 
     }
 

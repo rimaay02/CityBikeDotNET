@@ -37,17 +37,7 @@ namespace CityBikeAPI.Controllers
             return Ok(stationInfo);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddStation([FromBody] Station station)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            await db.AddAsync(station);
-            await db.SaveChangesAsync();
-            return Ok(station.ID);
-        }
+       
     }
 
 }

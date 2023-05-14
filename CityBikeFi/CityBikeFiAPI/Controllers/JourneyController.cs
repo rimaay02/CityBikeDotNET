@@ -1,6 +1,7 @@
 ﻿using CityBikeAPI.Data;
 using CityBikeAPI.Models;
 using CityBikeFiAPI.Models;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,11 +11,12 @@ namespace CityBikeAPI.Controllers
     public class JourneyController : InjectedController
     {
         public JourneyController(CityBikeContext context) : base(context) { }
-       
+
+        [EnableCors]
         [HttpGet]
         public async Task<IActionResult> GetAllJourneys()
         {
-            var journeys = await db.Journey.Take(500).ToListAsync();
+            var journeys = await db.Journey.Take(30).ToListAsync();
             var journeyViewModels = journeys.Select(journey => new JourneyView
             {
                 DepartureStation = journey.Departure_station_name,
@@ -24,17 +26,6 @@ namespace CityBikeAPI.Controllers
             }).ToList();
             return Ok(journeyViewModels);
         }
-
-        [HttpPost]
-        public async Task<IActionResult> AddNewJourney([FromBody] JourneyEntity journeyEntity)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var newJourney = await db.AddAsync(journeyEntity);
-            await db.SaveChangesAsync();
-            return Ok(newJourney.Entity);
-        }
+             
     }
 }

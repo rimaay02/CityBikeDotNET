@@ -132,41 +132,6 @@ namespace CityBikeAPI.Controllers.Tests
             Assert.AreEqual(1, stationInfo.TotalJourneysEnding);
 
         }
-
-        [TestMethod()]
-        public async Task AddStationTestAsync()
-        {
-            var options = new DbContextOptionsBuilder<CityBikeContext>()
-      .UseInMemoryDatabase(databaseName: "NewStation")
-      .Options;
-            var dbContext = new CityBikeContext(options);
-            var controller = new StationController(dbContext);
-            var newStation = new Station()
-            {
-                FID = 88,
-                ID = 89,
-                Nimi = "Station 88",
-                Namn = "Station 88",
-                Name = "Station 88",
-                Osoite = "Address 88",
-                Adress = "Address 88",
-                Kaupunki = "City 88",
-                Stad = "City 88",
-                Operaattor = "Operator 88",
-                Kapasiteet = 15,
-                X = 60.23456M,
-                Y = 24.23456M
-            };
-            var expectedStationId = 89;
-
-            // Act
-            var result = await controller.AddStation(newStation) as OkObjectResult;
-            var actualStationId = (int)result.Value;
-
-            // Assert
-            Assert.AreEqual(StatusCodes.Status200OK, result.StatusCode);
-            Assert.AreEqual(expectedStationId, actualStationId);
-        }
             
     }
 }

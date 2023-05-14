@@ -82,40 +82,7 @@ namespace CityBikeAPI.Controllers.Tests
             }
         }
 
-        [TestMethod()]
-        public async Task AddNewJourneyTestAsync()
-        {
-            var options = new DbContextOptionsBuilder<CityBikeContext>()
-       .UseInMemoryDatabase(databaseName: "NewJourney")
-       .Options;
-            var dbContext = new CityBikeContext(options);
-            var controller = new JourneyController(dbContext);
-            var newJourney = new JourneyEntity()
-            {
-                Departure = DateTime.Now.AddDays(2),
-                Return = DateTime.Now.AddDays(2),
-                Departure_station_id = 10,
-                Departure_station_name = "Station 10",
-                Return_station_id = 11,
-                Return_station_name = "Station 11",
-                Covered_distance = 20,
-                Duration = 330
-            };
-
-            using (var context = new CityBikeContext(options))
-            {
-                var result = await controller.AddNewJourney(newJourney);
-                var okResult = result as OkObjectResult;
-                var journey = okResult.Value as JourneyEntity;
-
-                // Assert
-                Assert.IsNotNull(okResult);
-                Assert.IsInstanceOfType(okResult, typeof(OkObjectResult));
-                Assert.AreEqual(200, okResult.StatusCode);
-                Assert.IsNotNull(journey);
-                Assert.AreEqual(10, journey.Departure_station_id);
-            }
-        }
+      
     }
 
 }

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Helsinki City Bike App</title>
+    <link rel="stylesheet" href="style.css">
+	  <script src="citybike.js" defer></script>
+  </head>
+  <body>
+    <div class="app-container">
+      <div class="top">
+        <h1>Helsinki City Bike App</h1>
+      
+        <form class="search-form">
+          <input type="text" id="search" name="search" placeholder="Search for Station...">
+          <button type="submit" id="search-btn">Search</button>
+        </form>
+        <select id="list-select" name="list-select" class="dropdown">
+          <option value="journey" class="dropdown">Journey List</option>
+          <option value="station" class="dropdown">Station List</option>
+        </select>
+      </div>
+
+      <table id="journey-list">
+        <thead>
+          <tr>
+            <th>Departure Station</th>
+            <th>Return Station</th>
+            <th>Covered Distance (km)</th>
+            <th>Duration (min)</th>
+          </tr>
+        </thead>
+        <tbody id="journeys">
+          <!-- Journeys will be added here dynamically -->
+        </tbody>
+      </table>  
+      <table id="station-list">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Address</th>
+            <th>City</th>
+            <th>Operator</th>
+            <th>Capacity</th>
+            <th>X</th>
+            <th>Y</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="stations">
+        
+          <!-- Journeys will be added here dynamically -->
+        </tbody>
+      </table>  
+      
+    </div>
+  </body>
+</html>

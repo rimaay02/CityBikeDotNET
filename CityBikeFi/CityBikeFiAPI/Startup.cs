@@ -18,6 +18,11 @@ namespace CityBikeAPI
         }
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder => { 
+                    builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod(); });
+            });
             WaitForDBInit(_connectionString);
             var connectionString = _connectionString;
             var serverVersion = ServerVersion.AutoDetect(connectionString);
@@ -34,6 +39,13 @@ namespace CityBikeAPI
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseRouting();
+            app.UseCors();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+
             context.Database.Migrate();
             app.UseMvc();
         }
