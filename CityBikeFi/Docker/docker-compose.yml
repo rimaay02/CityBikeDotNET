@@ -1,5 +1,17 @@
 version: '3'
-services:  
+
+services:
+  frontend:
+    container_name: CityBikeFE
+    build:
+      context: .
+      dockerfile: fe.Dockerfile
+    ports:
+      - "5500:80"
+    networks: 
+      - frontend
+      - webapp
+
   webapp:
     container_name: webapp.test
     image: webapp:${WEBAPP_VERSION}
@@ -32,6 +44,7 @@ services:
         BUILD_LOCATION: ${BUILD_LOCATION}
     volumes:
       - appbuild:${BUILD_LOCATION}
+
   mysql:
     container_name: ${MYSQL_SERVER_NAME}
     platform: linux/x86_64
@@ -46,8 +59,19 @@ services:
     volumes:
       - dbvol:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD : "1234"
+      MYSQL_ROOT_PASSWORD: "1234"
+
+  cors:
+    build:
+      context: .
+      dockerfile: nginx.Dockerfile
+    container_name: cors
+    ports:
+      - "4545:80"
 
 volumes:
   appbuild:
   dbvol:
+networks:
+  frontend:
+  webapp:

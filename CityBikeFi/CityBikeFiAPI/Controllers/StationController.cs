@@ -1,6 +1,7 @@
 ﻿using CityBikeAPI.Data;
 using CityBikeAPI.Models;
 using CityBikeFiAPI.Models;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

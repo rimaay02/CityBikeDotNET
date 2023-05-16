@@ -20,8 +20,12 @@ namespace CityBikeAPI
         {
             services.AddCors(options =>
             {
-                options.AddDefaultPolicy(builder => { 
-                    builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod(); });
+                services.AddCors(o => o.AddPolicy("AllowOrigins", builder =>
+                {
+                    builder.WithOrigins("*")
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                }));
             });
             WaitForDBInit(_connectionString);
             var connectionString = _connectionString;
@@ -39,8 +43,9 @@ namespace CityBikeAPI
             {
                 app.UseDeveloperExceptionPage();
             }
+            
             app.UseRouting();
-            app.UseCors();
+            app.UseCors("AllowOrigins");
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

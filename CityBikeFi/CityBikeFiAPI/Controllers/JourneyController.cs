@@ -12,7 +12,6 @@ namespace CityBikeAPI.Controllers
     {
         public JourneyController(CityBikeContext context) : base(context) { }
 
-        [EnableCors]
         [HttpGet]
         public async Task<IActionResult> GetAllJourneys()
         {
