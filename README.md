@@ -1,4 +1,4 @@
-# SolitaDevAcademy Assignment
+# City Bike App
 Thi City Bike App using .NET core as the rest API and MYSQL as its database. The frontend using HTML,CSS and JavaScript.
 The unit tests and integration tests also has been done for this app.
 NGINX used as reverse proxy. The app allows the user to view journey and station list that is retrieved from City Bike Finland.
